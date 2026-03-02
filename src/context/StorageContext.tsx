@@ -360,7 +360,8 @@ export function StorageProvider({ children }: { children: React.ReactNode }) {
             people: prev.people.map(p => (p.id === id ? { ...p, ...updates } : p))
         }));
 
-        await supabase.from('people').update(mapPersonToDB(updates)).eq('id', id);
+        const { error } = await supabase.from('people').update(mapPersonToDB(updates)).eq('id', id);
+        if (error) console.error("Error adding visit:", error);
     };
 
     const deletePerson = async (id: string) => {
@@ -375,7 +376,7 @@ export function StorageProvider({ children }: { children: React.ReactNode }) {
 
         setData(prev => ({ ...prev, transactions: [...prev.transactions, newTx] }));
 
-        await supabase.from('transactions').insert({
+        const { error } = await supabase.from('transactions').insert({
             id: newTx.id,
             date: newTx.date,
             amount: newTx.amount,
@@ -392,7 +393,7 @@ export function StorageProvider({ children }: { children: React.ReactNode }) {
         const newUser = { ...user, id };
         setData(prev => ({ ...prev, systemUsers: [...prev.systemUsers, newUser] }));
 
-        await supabase.from('system_users').insert({
+        const { error } = await supabase.from('system_users').insert({
             id: newUser.id,
             username: newUser.username,
             email: newUser.email,
