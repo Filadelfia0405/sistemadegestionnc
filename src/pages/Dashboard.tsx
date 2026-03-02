@@ -18,7 +18,6 @@ export default function Dashboard() {
     const candBautizo = people.filter(p => p.status === 'CANDIDATO_BAUTIZO').length;
 
     // Total candidates for general reporting if needed, but we show specifics now
-    const _candidates = candPuertas + candAliados + candBautizo;
 
     const members = people.filter(p => p.status === 'MIEMBRO_ACTIVO').length;
     const estancados = people.filter(p => p.status === 'ESTANCADO').length;

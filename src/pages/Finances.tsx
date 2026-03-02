@@ -1,10 +1,9 @@
 import React, { useState } from 'react';
 import { useStorage } from '../context/StorageContext';
 import { useAuth } from '../context/AuthContext';
-import { Transaction, TransactionType, TransactionCategory } from '../types';
+import { Transaction, TransactionCategory } from '../types';
 import { Wallet, TrendingUp, TrendingDown, DollarSign, ArrowUpRight, ArrowDownLeft } from 'lucide-react';
 import { cn } from '../utils/cn';
-import { format } from 'date-fns';
 
 export default function Finances() {
     const { transactions, addTransaction } = useStorage();

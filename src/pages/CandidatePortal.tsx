@@ -75,7 +75,7 @@ export default function CandidatePortal() {
         civilStatus: '',
         spouseName: '',
         hasChildren: 'NO', // Using string for radio, convert to bool on submit
-        childrenCount: undefined as number,
+        childrenCount: undefined as number | undefined,
         residenceZone: '',
         sector: '',
 

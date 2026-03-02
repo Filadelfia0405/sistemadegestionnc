@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useStorage } from '../context/StorageContext';
 import { useAuth } from '../context/AuthContext';
 import { Person, SpiritualStatus } from '../types';
-import { Search, UserCheck, Calendar, Eye, ArrowRightLeft, TriangleAlert, UserMinus, Users, Trash2 } from 'lucide-react';
+import { Search, UserCheck, Eye, ArrowRightLeft, TriangleAlert, UserMinus, Users, Trash2 } from 'lucide-react';
 import { cn } from '../utils/cn';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { SECTORS } from '../data/sectors';
@@ -18,7 +18,7 @@ const STATUS_COLORS: Record<SpiritualStatus, string> = {
 };
 
 export default function PeopleList() {
-    const { people, ministries, updatePerson, deletePerson, addVisit } = useStorage();
+    const { people, ministries, updatePerson, deletePerson } = useStorage();
     const { user, hasPermission } = useAuth();
     const [searchTerm, setSearchTerm] = useState('');
     const navigate = useNavigate();
@@ -74,16 +74,7 @@ export default function PeopleList() {
         return matchesSearch && matchesStatus && matchesMinistry && matchesSector && matchesMunicipality;
     });
 
-    // Count people in selected municipality
-    const municipalityCount = municipalityFilter !== 'ALL'
-        ? people.filter(p => p.municipality === municipalityFilter).length
-        : 0;
 
-    const handleAddVisit = (id: string) => {
-        if (confirm('¿Registrar nueva visita para esta persona?')) {
-            addVisit(id);
-        }
-    };
 
     const openStatusModal = (person: Person) => {
         setSelectedPerson(person);
