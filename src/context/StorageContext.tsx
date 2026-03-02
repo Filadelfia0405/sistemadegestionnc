@@ -323,7 +323,8 @@ export function StorageProvider({ children }: { children: React.ReactNode }) {
         setData(prev => ({ ...prev, people: [...prev.people, newPerson] }));
 
         // Remote write
-        await supabase.from('people').insert(mapPersonToDB(newPerson));
+        const { error } = await supabase.from('people').insert(mapPersonToDB(newPerson));
+        if (error) console.error("Error adding person:", error);
     };
 
     const updatePerson = async (id: string, updates: Partial<Person>) => {
@@ -364,7 +365,8 @@ export function StorageProvider({ children }: { children: React.ReactNode }) {
 
     const deletePerson = async (id: string) => {
         setData(prev => ({ ...prev, people: prev.people.filter(p => p.id !== id) }));
-        await supabase.from('people').delete().eq('id', id);
+        const { error } = await supabase.from('people').delete().eq('id', id);
+        if (error) console.error("Error deleting person:", error);
     };
 
     const addTransaction = async (transaction: Transaction) => {
@@ -382,6 +384,7 @@ export function StorageProvider({ children }: { children: React.ReactNode }) {
             description: newTx.description,
             registered_by: newTx.registeredBy
         });
+        if (error) console.error("Error adding transaction:", error);
     };
 
     const addSystemUser = async (user: User) => {
@@ -396,6 +399,7 @@ export function StorageProvider({ children }: { children: React.ReactNode }) {
             password: newUser.password,
             role: newUser.role,
         });
+        if (error) console.error("Error adding user:", error);
     };
 
     const updateSystemUser = async (id: string, updates: Partial<User>) => {
@@ -410,7 +414,8 @@ export function StorageProvider({ children }: { children: React.ReactNode }) {
         if (updates.password) dbUpdates.password = updates.password;
         if (updates.role) dbUpdates.role = updates.role;
 
-        await supabase.from('system_users').update(dbUpdates).eq('id', id);
+        const { error } = await supabase.from('system_users').update(dbUpdates).eq('id', id);
+        if (error) console.error("Error updating user:", error);
     };
 
     const deleteSystemUser = async (id: string) => {
@@ -418,7 +423,8 @@ export function StorageProvider({ children }: { children: React.ReactNode }) {
             ...prev,
             systemUsers: prev.systemUsers.filter(u => u.id !== id),
         }));
-        await supabase.from('system_users').delete().eq('id', id);
+        const { error } = await supabase.from('system_users').delete().eq('id', id);
+        if (error) console.error("Error deleting user:", error);
     };
 
     const getPersonById = (id: string) => data.people.find(p => p.id === id);
