@@ -4,7 +4,7 @@ import { useStorage } from '../context/StorageContext';
 import { useAuth } from '../context/AuthContext';
 import { ArrowLeft, User, Phone, Mail, MapPin, Calendar, Users, Award, FileText, TriangleAlert, Trash2 } from 'lucide-react';
 import { cn } from '../utils/cn';
-import { SpiritualStatus } from '../types';
+import { Person, SpiritualStatus } from '../types';
 
 const STATUS_COLORS: Record<SpiritualStatus, string> = {
     'VISITA': 'bg-blue-500/10 text-blue-400 border-blue-500/20',
@@ -23,6 +23,8 @@ export default function PersonDetail() {
     const { user, hasPermission } = useAuth();
     const [isImageModalOpen, setIsImageModalOpen] = useState(false);
     const [newNote, setNewNote] = useState('');
+    const [isEditing, setIsEditing] = useState(false);
+    const [editedPerson, setEditedPerson] = useState<Partial<Person>>({});
 
     // Permission Logic
     // Permission Logic
@@ -83,6 +85,29 @@ export default function PersonDetail() {
 
     const person = people.find(p => p.id === id);
 
+    const handleEditClick = () => {
+        if (person) {
+            setEditedPerson(person);
+            setIsEditing(true);
+        }
+    };
+
+    const handleSaveClick = async () => {
+        if (person && editedPerson) {
+            await updatePerson(person.id, editedPerson);
+            setIsEditing(false);
+        }
+    };
+
+    const handleCancelEdit = () => {
+        setIsEditing(false);
+        setEditedPerson({});
+    };
+
+    const handleChange = (field: keyof Person, value: any) => {
+        setEditedPerson(prev => ({ ...prev, [field]: value }));
+    };
+
     if (!person) {
         return (
             <div className="flex flex-col items-center justify-center h-96 text-gray-500">
@@ -97,13 +122,42 @@ export default function PersonDetail() {
     return (
         <div className="space-y-6 max-w-4xl mx-auto pb-10">
             {/* Header / Back */}
-            <button
-                onClick={() => navigate('/personas')}
-                className="flex items-center gap-2 text-gray-400 hover:text-white transition-colors"
-            >
-                <ArrowLeft className="w-5 h-5" />
-                Volver
-            </button>
+            <div className="flex justify-between items-center">
+                <button
+                    onClick={() => navigate('/personas')}
+                    className="flex items-center gap-2 text-gray-400 hover:text-white transition-colors"
+                >
+                    <ArrowLeft className="w-5 h-5" />
+                    Volver
+                </button>
+                {user?.role === 'ADMINISTRADOR' && (
+                    <div className="flex gap-3">
+                        {isEditing ? (
+                            <>
+                                <button
+                                    onClick={handleCancelEdit}
+                                    className="px-4 py-2 text-sm text-gray-400 hover:text-white transition-colors"
+                                >
+                                    Cancelar
+                                </button>
+                                <button
+                                    onClick={handleSaveClick}
+                                    className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition-colors text-sm"
+                                >
+                                    Guardar Cambios
+                                </button>
+                            </>
+                        ) : (
+                            <button
+                                onClick={handleEditClick}
+                                className="bg-gray-800 hover:bg-gray-700 text-white px-4 py-2 rounded-lg font-medium transition-colors text-sm border border-gray-700"
+                            >
+                                Editar Perfil
+                            </button>
+                        )}
+                    </div>
+                )}
+            </div>
 
             {/* Main Profile Card */}
             <div className="bg-gray-900 rounded-xl border border-gray-800 overflow-hidden">
@@ -125,13 +179,34 @@ export default function PersonDetail() {
 
                     <div className="flex-1">
                         <div className="flex flex-col md:flex-row md:items-center gap-3">
-                            <h1 className="text-3xl font-bold text-white">{person.fullName}</h1>
-                            <span className={cn(
-                                "px-3 py-1 rounded-full text-sm font-medium border w-fit",
-                                STATUS_COLORS[person.status]
-                            )}>
-                                {person.status.replace(/_/g, ' ')}
-                            </span>
+                            {isEditing ? (
+                                <input
+                                    type="text"
+                                    value={editedPerson.fullName || ''}
+                                    onChange={(e) => handleChange('fullName', e.target.value)}
+                                    className="text-3xl font-bold bg-gray-900 border border-gray-700 rounded-lg px-3 py-1 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 w-full max-w-md"
+                                />
+                            ) : (
+                                <h1 className="text-3xl font-bold text-white">{person.fullName}</h1>
+                            )}
+                            {isEditing ? (
+                                <select
+                                    value={editedPerson.status || 'VISITA'}
+                                    onChange={(e) => handleChange('status', e.target.value as SpiritualStatus)}
+                                    className="bg-gray-900 border border-gray-700 rounded-lg px-3 py-1.5 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm font-medium"
+                                >
+                                    {Object.keys(STATUS_COLORS).map(s => (
+                                        <option key={s} value={s}>{s.replace(/_/g, ' ')}</option>
+                                    ))}
+                                </select>
+                            ) : (
+                                <span className={cn(
+                                    "px-3 py-1 rounded-full text-sm font-medium border w-fit",
+                                    STATUS_COLORS[person.status]
+                                )}>
+                                    {person.status.replace(/_/g, ' ')}
+                                </span>
+                            )}
                         </div>
 
                         <div className="mt-4 flex flex-wrap gap-4 text-gray-400 text-sm">
@@ -168,30 +243,76 @@ export default function PersonDetail() {
                                 Contacto
                             </h3>
                             <div className="bg-gray-950/50 p-4 rounded-lg border border-gray-800 space-y-3">
-                                <div className="flex gap-3">
+                                <div className="flex gap-3 items-center">
                                     <Phone className="w-5 h-5 text-gray-600 shrink-0" />
-                                    <span className="text-gray-300">{person.phone || 'No registrado'}</span>
+                                    {isEditing ? (
+                                        <input
+                                            type="text"
+                                            value={editedPerson.phone || ''}
+                                            onChange={(e) => handleChange('phone', e.target.value)}
+                                            className="bg-gray-900 border border-gray-700 rounded px-2 py-1 text-gray-300 w-full"
+                                        />
+                                    ) : (
+                                        <span className="text-gray-300">{person.phone || 'No registrado'}</span>
+                                    )}
                                 </div>
-                                <div className="flex gap-3">
+                                <div className="flex gap-3 items-center">
                                     <Mail className="w-5 h-5 text-gray-600 shrink-0" />
-                                    <span className="text-gray-300">{person.email || 'No registrado'}</span>
+                                    {isEditing ? (
+                                        <input
+                                            type="email"
+                                            value={editedPerson.email || ''}
+                                            onChange={(e) => handleChange('email', e.target.value)}
+                                            className="bg-gray-900 border border-gray-700 rounded px-2 py-1 text-gray-300 w-full"
+                                        />
+                                    ) : (
+                                        <span className="text-gray-300">{person.email || 'No registrado'}</span>
+                                    )}
                                 </div>
-                                <div className="flex gap-3">
-                                    <MapPin className="w-5 h-5 text-gray-600 shrink-0" />
-                                    <div className="text-gray-300">
-                                        {person.residenceZone || person.address || 'No registrada'}
-                                        {person.streetName && (
-                                            <span className="block text-sm text-gray-500">
-                                                {person.streetName}{person.houseNumber && ` #${person.houseNumber}`}
-                                            </span>
-                                        )}
-                                        {person.sector && (
-                                            <span className="block text-sm text-gray-500">{person.sector}</span>
-                                        )}
-                                        {person.municipality && (
-                                            <span className="block text-sm text-gray-500">{person.municipality}</span>
-                                        )}
-                                    </div>
+                                <div className="flex gap-3 mt-3">
+                                    <MapPin className="w-5 h-5 text-gray-600 shrink-0 mt-1" />
+                                    {isEditing ? (
+                                        <div className="space-y-2 w-full">
+                                            <input
+                                                type="text"
+                                                placeholder="Calle y número / Dirección"
+                                                value={editedPerson.address || ''}
+                                                onChange={(e) => handleChange('address', e.target.value)}
+                                                className="bg-gray-900 border border-gray-700 rounded px-2 py-1 text-gray-300 w-full text-sm"
+                                            />
+                                            <div className="flex gap-2">
+                                                <input
+                                                    type="text"
+                                                    placeholder="Sector"
+                                                    value={editedPerson.sector || ''}
+                                                    onChange={(e) => handleChange('sector', e.target.value)}
+                                                    className="bg-gray-900 border border-gray-700 rounded px-2 py-1 text-gray-300 w-full text-sm flex-1"
+                                                />
+                                                <input
+                                                    type="text"
+                                                    placeholder="Municipio"
+                                                    value={editedPerson.municipality || ''}
+                                                    onChange={(e) => handleChange('municipality', e.target.value)}
+                                                    className="bg-gray-900 border border-gray-700 rounded px-2 py-1 text-gray-300 w-full text-sm flex-1"
+                                                />
+                                            </div>
+                                        </div>
+                                    ) : (
+                                        <div className="text-gray-300">
+                                            {person.residenceZone || person.address || 'No registrada'}
+                                            {person.streetName && (
+                                                <span className="block text-sm text-gray-500">
+                                                    {person.streetName}{person.houseNumber && ` #${person.houseNumber}`}
+                                                </span>
+                                            )}
+                                            {person.sector && (
+                                                <span className="block text-sm text-gray-500">{person.sector}</span>
+                                            )}
+                                            {person.municipality && (
+                                                <span className="block text-sm text-gray-500">{person.municipality}</span>
+                                            )}
+                                        </div>
+                                    )}
                                 </div>
                             </div>
                         </section>
@@ -205,20 +326,71 @@ export default function PersonDetail() {
                         </h3>
                         <div className="bg-gray-950/50 p-4 rounded-lg border border-gray-800 space-y-3">
                             <div>
-                                <p className="text-gray-500 text-xs uppercase tracking-wide">Estado Civil</p>
-                                <p className="text-gray-300 font-medium">{person.civilStatus || 'No registrado'}</p>
+                                <p className="text-gray-500 text-xs uppercase tracking-wide mb-1">Estado Civil</p>
+                                {isEditing ? (
+                                    <select
+                                        value={editedPerson.civilStatus || ''}
+                                        onChange={(e) => handleChange('civilStatus', e.target.value)}
+                                        className="bg-gray-900 border border-gray-700 rounded px-2 py-1 text-gray-300 w-full text-sm"
+                                    >
+                                        <option value="">Seleccionar...</option>
+                                        <option value="Soltero/a">Soltero/a</option>
+                                        <option value="Casado/a">Casado/a</option>
+                                        <option value="En una relación / Noviazgo">En una relación / Noviazgo</option>
+                                        <option value="Comprometido/a">Comprometido/a</option>
+                                        <option value="Unión libre">Unión libre</option>
+                                        <option value="Divorciado/a">Divorciado/a</option>
+                                        <option value="Separado/a">Separado/a</option>
+                                    </select>
+                                ) : (
+                                    <p className="text-gray-300 font-medium">{person.civilStatus || 'No registrado'}</p>
+                                )}
                             </div>
-                            {person.spouseName && (
+                            {(person.spouseName || isEditing) && (
                                 <div>
-                                    <p className="text-gray-500 text-xs uppercase tracking-wide">Cónyuge</p>
-                                    <p className="text-gray-300 font-medium">{person.spouseName}</p>
+                                    <p className="text-gray-500 text-xs uppercase tracking-wide mb-1">Cónyuge</p>
+                                    {isEditing ? (
+                                        <input
+                                            type="text"
+                                            value={editedPerson.spouseName || ''}
+                                            onChange={(e) => handleChange('spouseName', e.target.value)}
+                                            className="bg-gray-900 border border-gray-700 rounded px-2 py-1 text-gray-300 w-full text-sm"
+                                            placeholder="Nombre del cónyuge"
+                                        />
+                                    ) : (
+                                        <p className="text-gray-300 font-medium">{person.spouseName}</p>
+                                    )}
                                 </div>
                             )}
                             <div>
-                                <p className="text-gray-500 text-xs uppercase tracking-wide">Hijos</p>
-                                <p className="text-gray-300 font-medium">
-                                    {person.hasChildren ? `Sí ${person.childrenCount ? `(${person.childrenCount})` : ''}` : 'No'}
-                                </p>
+                                <p className="text-gray-500 text-xs uppercase tracking-wide mb-1">Hijos</p>
+                                {isEditing ? (
+                                    <div className="flex gap-3">
+                                        <label className="flex items-center gap-2 text-sm text-gray-300">
+                                            <input
+                                                type="checkbox"
+                                                checked={!!editedPerson.hasChildren}
+                                                onChange={(e) => handleChange('hasChildren', e.target.checked)}
+                                                className="rounded bg-gray-900 border border-gray-700"
+                                            />
+                                            Tiene hijos
+                                        </label>
+                                        {editedPerson.hasChildren && (
+                                            <input
+                                                type="number"
+                                                min="1"
+                                                value={editedPerson.childrenCount || ''}
+                                                onChange={(e) => handleChange('childrenCount', parseInt(e.target.value) || 0)}
+                                                className="bg-gray-900 border border-gray-700 rounded px-2 py-1 text-gray-300 w-20 text-sm"
+                                                placeholder="Cant."
+                                            />
+                                        )}
+                                    </div>
+                                ) : (
+                                    <p className="text-gray-300 font-medium">
+                                        {person.hasChildren ? `Sí ${person.childrenCount ? `(${person.childrenCount})` : ''}` : 'No'}
+                                    </p>
+                                )}
                             </div>
 
 
