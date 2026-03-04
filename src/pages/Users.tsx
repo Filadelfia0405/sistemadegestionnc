@@ -182,7 +182,7 @@ export default function Users() {
                                 <div className="p-3 bg-gray-800 rounded-xl">
                                     <UserIcon className="w-6 h-6 text-blue-400" />
                                 </div>
-                                <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                                <div className="flex gap-2">
                                     {/* Edit: Admin can edit all, Pastor Principal can edit non-Admin */}
                                     {(canManage || (user?.role === 'PASTOR_PRINCIPAL' && sUser.role !== 'ADMINISTRADOR')) && (
                                         <button
