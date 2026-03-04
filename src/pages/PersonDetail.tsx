@@ -130,7 +130,7 @@ export default function PersonDetail() {
                     <ArrowLeft className="w-5 h-5" />
                     Volver
                 </button>
-                {(user?.role === 'ADMINISTRADOR' || (user?.role === 'LIDER_CONEXION' && ['VISITA', 'CANDIDATO_PUERTAS_ABIERTAS', 'CANDIDATO_ALIADOS'].includes(person.status))) && (
+                {(user?.role === 'ADMINISTRADOR' || ((user?.role === 'LIDER_CONEXION' || user?.role === 'EQUIPO_CONEXION') && ['VISITA', 'CANDIDATO_PUERTAS_ABIERTAS', 'CANDIDATO_ALIADOS'].includes(person.status))) && (
                     <div className="flex gap-3">
                         {isEditing ? (
                             <>
@@ -196,7 +196,7 @@ export default function PersonDetail() {
                                     className="bg-gray-900 border border-gray-700 rounded-lg px-3 py-1.5 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm font-medium"
                                 >
                                     {Object.keys(STATUS_COLORS)
-                                        .filter(s => user?.role === 'ADMINISTRADOR' || ['VISITA', 'CANDIDATO_PUERTAS_ABIERTAS', 'CANDIDATO_ALIADOS'].includes(s))
+                                        .filter(s => user?.role === 'ADMINISTRADOR' || ((user?.role === 'LIDER_CONEXION' || user?.role === 'EQUIPO_CONEXION') && ['VISITA', 'CANDIDATO_PUERTAS_ABIERTAS', 'CANDIDATO_ALIADOS'].includes(s)))
                                         .map(s => (
                                             <option key={s} value={s}>{s.replace(/_/g, ' ')}</option>
                                         ))}
