@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useStorage } from '../context/StorageContext';
 import { User, Role } from '../types';
 import { useAuth } from '../context/AuthContext';
-import { UserPlus, Edit2, Trash2, Shield, Mail, Calendar, Key, User as UserIcon } from 'lucide-react';
+import { UserPlus, Edit2, Trash2, Shield, Mail, Calendar, Key, User as UserIcon, Power } from 'lucide-react';
 import { cn } from '../utils/cn';
 
 const ROLE_LABELS: Record<Role, string> = {
@@ -111,6 +111,16 @@ export default function Users() {
         resetForm();
     };
 
+    const toggleUserStatus = (targetUser: User) => {
+        if (!canManage) return;
+        // Don't let user disable themselves
+        if (targetUser.id === user?.id) {
+            alert('No puedes deshabilitar tu propio usuario.');
+            return;
+        }
+        updateSystemUser(targetUser.id, { isActive: targetUser.isActive === false ? true : false });
+    };
+
     const confirmDelete = (id: string, targetRole: Role) => {
         // Pastor Principal cannot delete Administrador
         if (user?.role === 'PASTOR_PRINCIPAL' && targetRole === 'ADMINISTRADOR') {
@@ -183,6 +193,21 @@ export default function Users() {
                                             <Edit2 className="w-4 h-4" />
                                         </button>
                                     )}
+                                    {/* Toggle Active Status */}
+                                    {canManage && (
+                                        <button
+                                            onClick={() => toggleUserStatus(sUser)}
+                                            title={sUser.isActive === false ? "Habilitar Usuario" : "Deshabilitar Usuario"}
+                                            className={cn(
+                                                "p-2 rounded-lg transition-colors",
+                                                sUser.isActive === false
+                                                    ? "text-gray-500 hover:text-green-400 hover:bg-green-500/10"
+                                                    : "text-green-400 hover:text-yellow-400 hover:bg-yellow-500/10"
+                                            )}
+                                        >
+                                            <Power className="w-4 h-4" />
+                                        </button>
+                                    )}
                                     {/* Show delete button for: canDelete AND (not trying to delete Admin as Pastor) */}
                                     {canDelete && !(user?.role === 'PASTOR_PRINCIPAL' && sUser.role === 'ADMINISTRADOR') && (
                                         <button
@@ -205,6 +230,11 @@ export default function Users() {
                                     )}>
                                         {ROLE_LABELS[sUser.role]}
                                     </span>
+                                    {sUser.isActive === false && (
+                                        <span className="inline-block px-2.5 py-0.5 rounded-full text-xs font-semibold border mt-1 ml-2 bg-gray-800 text-gray-400 border-gray-700">
+                                            Inactivo
+                                        </span>
+                                    )}
                                 </div>
 
                                 <div className="space-y-2 pt-2 border-t border-gray-800">

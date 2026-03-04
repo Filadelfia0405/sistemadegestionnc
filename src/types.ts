@@ -37,6 +37,7 @@ export interface User {
     password?: string; // Only for system users
     role: Role;
     createdAt: string;
+    isActive?: boolean;
 }
 
 export interface FamilyMember {

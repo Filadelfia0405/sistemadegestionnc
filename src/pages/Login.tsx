@@ -71,6 +71,10 @@ export default function Login() {
         );
 
         if (user) {
+            if (user.isActive === false) {
+                setError('Este usuario está deshabilitado. Contacta al administrador.');
+                return;
+            }
             login(user);
             navigate('/dashboard');
         } else {

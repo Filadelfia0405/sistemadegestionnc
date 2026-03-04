@@ -225,7 +225,8 @@ export function StorageProvider({ children }: { children: React.ReactNode }) {
                         email: u.email,
                         password: u.password,
                         role: u.role,
-                        createdAt: u.created_at
+                        createdAt: u.created_at,
+                        isActive: u.is_active
                     })),
                     ministries: ministriesRes.data || [],
                     leadershipRoles: leadershipRolesRes.data || []
@@ -399,6 +400,7 @@ export function StorageProvider({ children }: { children: React.ReactNode }) {
             email: newUser.email,
             password: newUser.password,
             role: newUser.role,
+            is_active: newUser.isActive !== false,
         });
         if (error) console.error("Error adding user:", error);
     };
@@ -414,6 +416,7 @@ export function StorageProvider({ children }: { children: React.ReactNode }) {
         if (updates.email) dbUpdates.email = updates.email;
         if (updates.password) dbUpdates.password = updates.password;
         if (updates.role) dbUpdates.role = updates.role;
+        if (updates.isActive !== undefined) dbUpdates.is_active = updates.isActive;
 
         const { error } = await supabase.from('system_users').update(dbUpdates).eq('id', id);
         if (error) console.error("Error updating user:", error);
