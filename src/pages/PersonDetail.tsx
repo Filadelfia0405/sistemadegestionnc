@@ -445,7 +445,7 @@ export default function PersonDetail() {
                             Ministerio
                         </h3>
                         <div className="bg-gray-950/50 p-6 rounded-lg border border-gray-800">
-                            {user?.role === 'PASTOR_PRINCIPAL' && person.status === 'MIEMBRO_ACTIVO' ? (
+                            {(user?.role === 'PASTOR_PRINCIPAL' || user?.role === 'ADMINISTRADOR') && person.status === 'MIEMBRO_ACTIVO' ? (
                                 <div className="space-y-3">
                                     <p className="text-sm text-gray-400">Asignar esta persona a un ministerio:</p>
                                     <select
@@ -460,7 +460,7 @@ export default function PersonDetail() {
                                     </select>
 
                                     <div className="pt-2 border-t border-gray-800 mt-2">
-                                        <p className="text-sm text-gray-400 mb-1">Asignar Liderazgo (Solo Pastor Principal):</p>
+                                        <p className="text-sm text-gray-400 mb-1">Asignar Liderazgo (Pastor Principal / Administrador):</p>
                                         <select
                                             value={person.leadershipId || ''}
                                             onChange={(e) => updatePerson(person.id, { leadershipId: e.target.value })}
