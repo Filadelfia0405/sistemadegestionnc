@@ -321,8 +321,8 @@ export default function PeopleList() {
 
 
 
-                                            {/* Manual Status Move (Admin/Pastor) */}
-                                            {canSeeSensitiveData && (
+                                            {/* Manual Status Move (Admin/Pastor/LiderConexion) */}
+                                            {(canSeeSensitiveData || (user?.role === 'LIDER_CONEXION' && ['VISITA', 'CANDIDATO_PUERTAS_ABIERTAS', 'CANDIDATO_ALIADOS'].includes(person.status))) && (
                                                 <button
                                                     onClick={() => openStatusModal(person)}
                                                     title="Mover de Estado Manualmente"
@@ -383,11 +383,13 @@ export default function PeopleList() {
                                     onChange={(e) => setNewStatus(e.target.value as SpiritualStatus)}
                                     className="w-full bg-gray-950 border border-gray-800 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-purple-500"
                                 >
-                                    {Object.keys(STATUS_COLORS).map((status) => (
-                                        <option key={status} value={status}>
-                                            {status.replace(/_/g, ' ')}
-                                        </option>
-                                    ))}
+                                    {Object.keys(STATUS_COLORS)
+                                        .filter(status => canSeeSensitiveData || ['VISITA', 'CANDIDATO_PUERTAS_ABIERTAS', 'CANDIDATO_ALIADOS'].includes(status))
+                                        .map((status) => (
+                                            <option key={status} value={status}>
+                                                {status.replace(/_/g, ' ')}
+                                            </option>
+                                        ))}
                                 </select>
                             </div>
                         </div>
