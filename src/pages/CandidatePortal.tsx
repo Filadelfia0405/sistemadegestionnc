@@ -47,6 +47,23 @@ const CIVIL_STATUS_OPTIONS = [
     'Comprometido/a', 'Unión libre', 'Divorciado/a', 'Separado/a'
 ];
 
+const TECHNICAL_COURSES_LIST = [
+    "Computación",
+    "Diseño grafico",
+    "Fotografía",
+    "Edición de video",
+    "Sonidista",
+    "Manejo de redes sociales",
+    "Electricidad",
+    "Refrigeracion",
+    "Electrónica",
+    "Oratoria",
+    "Idiomas",
+    "Ebanista",
+    "Pintor",
+    "Otros"
+];
+
 export default function CandidatePortal() {
     const { people, updatePerson } = useStorage();
     const { user, logout } = useAuth();
@@ -90,6 +107,12 @@ export default function CandidatePortal() {
         baptizedInEvangelicalChurch: 'NO',
         wantsBaptism: 'NO', // "Sí" or "No por ahora"
 
+        // Nivel Profesional
+        educationLevel: '',
+        profession: '',
+        technicalCourses: [] as string[],
+        otherTechnicalCourse: '',
+
         // Personal Profile
         occupation: '',
         hobbies: '',
@@ -131,6 +154,11 @@ export default function CandidatePortal() {
                 baptizedInEvangelicalChurch: currentPerson.baptizedInEvangelicalChurch ? 'SI' : 'NO',
                 wantsBaptism: currentPerson.wantsBaptism ? 'SI' : 'NO',
 
+                educationLevel: currentPerson.educationLevel || '',
+                profession: currentPerson.profession || '',
+                technicalCourses: currentPerson.technicalCourses || [],
+                otherTechnicalCourse: currentPerson.otherTechnicalCourse || '',
+
                 occupation: currentPerson.occupation || currentPerson.profession || '',
                 hobbies: currentPerson.hobbies || '',
                 serviceAvailability: currentPerson.serviceAvailability || '',
@@ -171,7 +199,7 @@ export default function CandidatePortal() {
         }
     };
 
-    const toggleArrayItem = (field: 'preferredServiceAreas' | 'skills', value: string) => {
+    const toggleArrayItem = (field: 'preferredServiceAreas' | 'skills' | 'technicalCourses', value: string) => {
         setFormData(prev => {
             const current = prev[field];
             const exists = current.includes(value);
@@ -213,6 +241,11 @@ export default function CandidatePortal() {
             baptizedInEvangelicalChurch: formData.baptizedInEvangelicalChurch === 'SI',
             wantsBaptism: formData.wantsBaptism === 'SI',
             isBaptized: formData.baptizedInEvangelicalChurch === 'SI',
+
+            educationLevel: formData.educationLevel as any,
+            profession: ['Universitaria', 'Grados'].includes(formData.educationLevel) ? formData.profession : undefined,
+            technicalCourses: formData.technicalCourses,
+            otherTechnicalCourse: formData.technicalCourses.includes('Otros') ? formData.otherTechnicalCourse : undefined,
 
             occupation: formData.occupation,
             hobbies: formData.hobbies,
@@ -621,6 +654,83 @@ export default function CandidatePortal() {
                                 </div>
                             </div>
                         )}
+                    </div>
+                </section>
+
+                {/* NIVEL PROFESIONAL */}
+                <section className="bg-gray-900 p-6 rounded-xl border border-gray-800">
+                    <h2 className="text-xl font-bold text-amber-400 mb-6 uppercase tracking-wider border-b border-gray-800 pb-2">Sección 3: Nivel Profesional</h2>
+                    <div className="space-y-6">
+                        <div>
+                            <label className="block text-sm font-medium text-gray-300 mb-2">¿Cuál es su nivel de estudio? *</label>
+                            <select
+                                required
+                                value={formData.educationLevel}
+                                onChange={e => setFormData({ ...formData, educationLevel: e.target.value })}
+                                className="w-full bg-gray-950 border border-gray-800 rounded-lg p-3 text-white focus:ring-2 focus:ring-amber-500"
+                            >
+                                <option value="">Seleccione...</option>
+                                <option value="Primaria">Primaria</option>
+                                <option value="Secundaria">Secundaria</option>
+                                <option value="Técnico">Técnico</option>
+                                <option value="Universitaria">Universitaria</option>
+                                <option value="Grados">Grados</option>
+                            </select>
+                        </div>
+
+                        {['Universitaria', 'Grados'].includes(formData.educationLevel) && (
+                            <div className="animate-in fade-in slide-in-from-top-2">
+                                <label className="block text-sm font-medium text-gray-300 mb-2">Díganos cuál profesión</label>
+                                <input
+                                    type="text"
+                                    value={formData.profession || ''}
+                                    onChange={e => setFormData({ ...formData, profession: e.target.value })}
+                                    className="w-full bg-gray-950 border border-gray-800 rounded-lg p-3 text-white focus:ring-2 focus:ring-amber-500 placeholder:text-gray-700"
+                                    placeholder="Su profesión"
+                                />
+                            </div>
+                        )}
+
+                        <div>
+                            <label className="block text-sm font-medium text-gray-300 mb-3">¿Curso técnico o habilidad que haya desarrollado?</label>
+                            <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                                {TECHNICAL_COURSES_LIST.map(course => (
+                                    <label key={course} className="flex items-center gap-3 cursor-pointer group">
+                                        <div className={cn(
+                                            "w-4 h-4 rounded border flex items-center justify-center transition-colors",
+                                            formData.technicalCourses.includes(course)
+                                                ? "bg-amber-600 border-amber-600 text-white"
+                                                : "border-gray-600 group-hover:border-amber-500"
+                                        )}>
+                                            <input
+                                                type="checkbox"
+                                                className="hidden"
+                                                checked={formData.technicalCourses.includes(course)}
+                                                onChange={() => toggleArrayItem('technicalCourses', course)}
+                                            />
+                                            {formData.technicalCourses.includes(course) && <CheckSquare className="w-3 h-3" />}
+                                        </div>
+                                        <span className={cn(
+                                            "text-sm transition-colors",
+                                            formData.technicalCourses.includes(course) ? "text-amber-300 font-medium" : "text-gray-400 group-hover:text-gray-300"
+                                        )}>{course}</span>
+                                    </label>
+                                ))}
+                            </div>
+
+                            {formData.technicalCourses.includes('Otros') && (
+                                <div className="mt-4 animate-in fade-in slide-in-from-top-2">
+                                    <label className="block text-sm font-medium text-gray-300 mb-2">Por favor especifique otro curso técnico o habilidad:</label>
+                                    <input
+                                        type="text"
+                                        value={formData.otherTechnicalCourse || ''}
+                                        onChange={e => setFormData({ ...formData, otherTechnicalCourse: e.target.value })}
+                                        className="w-full bg-gray-950 border border-gray-800 rounded-lg p-3 text-white focus:ring-2 focus:ring-amber-500 placeholder:text-gray-700"
+                                        placeholder="Especifique..."
+                                    />
+                                </div>
+                            )}
+                        </div>
                     </div>
                 </section>
 

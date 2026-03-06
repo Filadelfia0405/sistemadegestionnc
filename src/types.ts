@@ -73,6 +73,9 @@ export interface Person {
     // Ally Profile (filled later)
     photoUrl?: string;
     profession?: string;
+    educationLevel?: 'Primaria' | 'Secundaria' | 'Técnico' | 'Universitaria' | 'Grados';
+    technicalCourses?: string[];
+    otherTechnicalCourse?: string;
     civilStatus?: 'Soltero/a' | 'Casado/a' | 'En una relación / Noviazgo' | 'Comprometido/a' | 'Unión libre' | 'Divorciado/a' | 'Separado/a';
     spouseName?: string;
     hasChildren?: boolean;
