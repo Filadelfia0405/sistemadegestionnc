@@ -72,17 +72,7 @@ export default function Registration() {
                             />
                         </div>
 
-                        <div className="space-y-2">
-                            <label className="text-sm font-medium text-gray-300">Edad</label>
-                            <input
-                                type="number"
-                                name="age"
-                                value={formData.age || ''}
-                                onChange={e => setFormData({ ...formData, age: parseInt(e.target.value) })}
-                                className="w-full bg-gray-950 border border-gray-800 rounded-lg p-3 text-white focus:ring-2 focus:ring-blue-500 outline-none"
-                                placeholder="Edad"
-                            />
-                        </div>
+
 
                         <div className="space-y-2 md:col-span-2">
                             <label className="text-sm font-medium text-gray-300 block mb-2">Número de Visita</label>

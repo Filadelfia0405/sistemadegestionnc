@@ -71,6 +71,7 @@ export default function CandidatePortal() {
     // Form State
     const [formData, setFormData] = useState({
         photoUrl: '', // Add this line
+        birthDate: '',
         // Family
         civilStatus: '',
         spouseName: '',
@@ -116,6 +117,7 @@ export default function CandidatePortal() {
             setFormData(prev => ({
                 ...prev,
                 photoUrl: currentPerson.photoUrl || '',
+                birthDate: currentPerson.birthDate || '',
                 civilStatus: currentPerson.civilStatus || '',
                 spouseName: currentPerson.spouseName || '',
                 hasChildren: currentPerson.hasChildren ? 'SI' : 'NO',
@@ -196,6 +198,7 @@ export default function CandidatePortal() {
 
         updatePerson(currentPerson.id, {
             photoUrl: formData.photoUrl,
+            birthDate: formData.birthDate,
             civilStatus: formData.civilStatus as any,
             spouseName: formData.civilStatus === 'Casado/a' ? formData.spouseName : undefined,
             hasChildren: formData.hasChildren === 'SI',
@@ -414,6 +417,17 @@ export default function CandidatePortal() {
                 <section className="bg-gray-900 p-6 rounded-xl border border-gray-800">
                     <h2 className="text-xl font-bold text-blue-400 mb-6 uppercase tracking-wider border-b border-gray-800 pb-2">Familia</h2>
                     <div className="space-y-6">
+                        <div>
+                            <label className="block text-sm font-medium text-gray-300 mb-2">Fecha de nacimiento *</label>
+                            <input
+                                required
+                                type="date"
+                                value={formData.birthDate}
+                                onChange={e => setFormData({ ...formData, birthDate: e.target.value })}
+                                className="w-full bg-gray-950 border border-gray-800 rounded-lg p-3 text-white focus:ring-2 focus:ring-blue-500"
+                            />
+                        </div>
+
                         <div>
                             <label className="block text-sm font-medium text-gray-300 mb-2">Estado civil *</label>
                             <select

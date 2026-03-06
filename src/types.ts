@@ -62,6 +62,7 @@ export interface Person {
     municipality?: string;
     sector?: string;
     age?: number;
+    birthDate?: string;
 
     // Status tracking
     status: SpiritualStatus;
