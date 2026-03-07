@@ -55,6 +55,7 @@ export const SECTORS: Record<string, string[]> = {
         "Los Trinitarios",
         "Lucerna",
         "Mendoza",
+        "Carretera Mendoza",
         "Prado Oriental",
         "San Isidro",
         "Savica",
