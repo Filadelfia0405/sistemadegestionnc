@@ -212,15 +212,10 @@ export default function PersonDetail() {
                         </div>
 
                         <div className="mt-4 flex flex-wrap gap-4 text-gray-400 text-sm">
-                            {(person.age || person.birthDate) && (
+                            {person.birthDate && (
                                 <div className="flex items-center gap-2">
                                     <Calendar className="w-4 h-4" />
-                                    {person.age && <span>{person.age} años</span>}
-                                    {person.birthDate && (
-                                        <span className="text-gray-500">
-                                            {person.age ? '·' : ''} Nac. {new Date(person.birthDate + 'T00:00:00').toLocaleDateString('es-DO', { day: '2-digit', month: 'long', year: 'numeric' })}
-                                        </span>
-                                    )}
+                                    <span>Nac. {new Date(person.birthDate + 'T00:00:00').toLocaleDateString('es-DO', { day: '2-digit', month: 'long', year: 'numeric' })}</span>
                                 </div>
                             )}
                             {person.leadershipId && (
