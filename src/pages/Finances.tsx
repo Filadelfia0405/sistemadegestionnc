@@ -230,8 +230,8 @@ export default function Finances() {
                             >
                                 {formData.type === 'INGRESO' ? (
                                     <>
-                                        <option value="DIEZMO">Diezmo</option>
-                                        <option value="OFRENDA">Ofrenda</option>
+                                        <option value="DIEZMO">Diezmos</option>
+                                        <option value="OFRENDA">Ofrendas</option>
                                         <option value="PRO_TEMPLO">Pro-Templo</option>
                                         <option value="OTRO">Otro</option>
                                     </>
