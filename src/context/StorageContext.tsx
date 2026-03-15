@@ -97,6 +97,7 @@ const mapPersonToDB = (p: Partial<Person>): any => {
     if (p.municipality !== undefined) db.municipality = p.municipality;
     if (p.sector !== undefined) db.sector = p.sector;
     if (p.age !== undefined) db.age = p.age;
+    if (p.birthDate !== undefined) db.birth_date = p.birthDate;
     if (p.status !== undefined) db.status = p.status;
     if (p.firstVisitDate !== undefined) db.first_visit_date = p.firstVisitDate;
     if (p.lastVisitDate !== undefined) db.last_visit_date = p.lastVisitDate;
