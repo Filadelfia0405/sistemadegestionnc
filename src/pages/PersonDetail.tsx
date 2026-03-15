@@ -212,10 +212,15 @@ export default function PersonDetail() {
                         </div>
 
                         <div className="mt-4 flex flex-wrap gap-4 text-gray-400 text-sm">
-                            {person.age && (
+                            {(person.age || person.birthDate) && (
                                 <div className="flex items-center gap-2">
                                     <Calendar className="w-4 h-4" />
-                                    {person.age} años
+                                    {person.age && <span>{person.age} años</span>}
+                                    {person.birthDate && (
+                                        <span className="text-gray-500">
+                                            {person.age ? '·' : ''} Nac. {new Date(person.birthDate + 'T00:00:00').toLocaleDateString('es-DO', { day: '2-digit', month: 'long', year: 'numeric' })}
+                                        </span>
+                                    )}
                                 </div>
                             )}
                             {person.leadershipId && (
@@ -598,39 +603,37 @@ export default function PersonDetail() {
                     </section>
 
                     {/* Professional Info */}
-                    {person.educationLevel && (
-                        <section className="space-y-4 md:col-span-2">
-                            <h3 className="text-lg font-bold text-white flex items-center gap-2">
-                                <Award className="w-5 h-5 text-gray-500" />
-                                Nivel Profesional
-                            </h3>
-                            <div className="bg-gray-950/50 p-6 rounded-lg border border-gray-800 grid grid-cols-1 md:grid-cols-2 gap-6">
-                                <div>
-                                    <h4 className="text-gray-500 text-xs uppercase tracking-wide mb-1">Nivel de Estudio</h4>
-                                    <p className="text-white font-medium">{person.educationLevel}</p>
-                                    {person.profession && (
-                                        <p className="text-gray-400 text-sm mt-1">{person.profession}</p>
+                    <section className="space-y-4 md:col-span-2">
+                        <h3 className="text-lg font-bold text-white flex items-center gap-2">
+                            <Award className="w-5 h-5 text-gray-500" />
+                            Nivel Profesional
+                        </h3>
+                        <div className="bg-gray-950/50 p-6 rounded-lg border border-gray-800 grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <h4 className="text-gray-500 text-xs uppercase tracking-wide mb-1">Nivel de Estudio</h4>
+                                <p className="text-white font-medium">{person.educationLevel || 'No registrado'}</p>
+                                {person.profession && (
+                                    <p className="text-gray-400 text-sm mt-1">{person.profession}</p>
+                                )}
+                            </div>
+                            <div>
+                                <h4 className="text-gray-500 text-xs uppercase tracking-wide mb-2">Cursos Técnicos / Habilidades</h4>
+                                <div className="flex flex-wrap gap-2">
+                                    {person.technicalCourses && person.technicalCourses.length > 0 ? (
+                                        person.technicalCourses.map((course, i) => (
+                                            <span key={i} className="px-2 py-1 bg-amber-900/30 text-amber-300 rounded text-xs border border-amber-500/30">
+                                                {course === 'Otros' && person.otherTechnicalCourse
+                                                    ? `Otro: ${person.otherTechnicalCourse}`
+                                                    : course}
+                                            </span>
+                                        ))
+                                    ) : (
+                                        <span className="text-gray-600 text-sm italic">Ninguno registrado</span>
                                     )}
                                 </div>
-                                <div>
-                                    <h4 className="text-gray-500 text-xs uppercase tracking-wide mb-2">Cursos Técnicos / Habilidades</h4>
-                                    <div className="flex flex-wrap gap-2">
-                                        {person.technicalCourses && person.technicalCourses.length > 0 ? (
-                                            person.technicalCourses.map((course, i) => (
-                                                <span key={i} className="px-2 py-1 bg-amber-900/30 text-amber-300 rounded text-xs border border-amber-500/30">
-                                                    {course === 'Otros' && person.otherTechnicalCourse
-                                                        ? `Otro: ${person.otherTechnicalCourse}`
-                                                        : course}
-                                                </span>
-                                            ))
-                                        ) : (
-                                            <span className="text-gray-600 text-sm italic">Ninguno registrado</span>
-                                        )}
-                                    </div>
-                                </div>
                             </div>
-                        </section>
-                    )}
+                        </div>
+                    </section>
 
                     {/* Personal Profile & Skills */}
                     <section className="space-y-4 md:col-span-2">

@@ -63,6 +63,10 @@ const mapPersonFromDB = (db: any): Person => ({
     otherServiceArea: db.other_service_area,
     experienceDescription: db.experience_description,
     previousServiceExperience: db.previous_service_experience,
+    educationLevel: db.education_level,
+    technicalCourses: db.technical_courses,
+    otherTechnicalCourse: db.other_technical_course,
+    birthDate: db.birth_date,
     skills: db.skills,
     otherSkill: db.other_skill,
     talents: db.talents,
@@ -114,6 +118,9 @@ const mapPersonToDB = (p: Partial<Person>): any => {
     if (p.serviceAvailability !== undefined) db.service_availability = p.serviceAvailability;
     if (p.preferredServiceAreas !== undefined) db.preferred_service_areas = p.preferredServiceAreas;
     if (p.otherServiceArea !== undefined) db.other_service_area = p.otherServiceArea;
+    if (p.educationLevel !== undefined) db.education_level = p.educationLevel;
+    if (p.technicalCourses !== undefined) db.technical_courses = p.technicalCourses;
+    if (p.otherTechnicalCourse !== undefined) db.other_technical_course = p.otherTechnicalCourse;
     if (p.experienceDescription !== undefined) db.experience_description = p.experienceDescription;
     if (p.previousServiceExperience !== undefined) db.previous_service_experience = p.previousServiceExperience;
     if (p.skills !== undefined) db.skills = p.skills;
