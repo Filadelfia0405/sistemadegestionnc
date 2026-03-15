@@ -91,6 +91,7 @@ export default function Finances() {
                         <option value="GASTO_OPERATIVO">Gastos Op.</option>
                         <option value="GASTO_INSUMOS">Gasto de Insumos</option>
                         <option value="GENEROSIDAD">Generosidad</option>
+                        <option value="PAGO_NOMINA">Pago de Nómina</option>
                         <option value="OTRO">Otros</option>
                     </select>
 
@@ -239,6 +240,7 @@ export default function Finances() {
                                         <option value="GASTO_OPERATIVO">Gasto Operativo</option>
                                         <option value="GASTO_INSUMOS">Gasto de Insumos</option>
                                         <option value="GENEROSIDAD">Generosidad</option>
+                                        <option value="PAGO_NOMINA">Pago de Nómina</option>
                                         <option value="OTRO">Otro</option>
                                     </>
                                 )}

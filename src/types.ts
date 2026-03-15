@@ -128,7 +128,7 @@ export interface Person {
 }
 
 export type TransactionType = 'INGRESO' | 'EGRESO';
-export type TransactionCategory = 'DIEZMO' | 'OFRENDA' | 'PRO_TEMPLO' | 'GASTO_OPERATIVO' | 'GASTO_INSUMOS' | 'GENEROSIDAD' | 'OTRO';
+export type TransactionCategory = 'DIEZMO' | 'OFRENDA' | 'PRO_TEMPLO' | 'GASTO_OPERATIVO' | 'GASTO_INSUMOS' | 'GENEROSIDAD' | 'PAGO_NOMINA' | 'OTRO';
 
 export interface Transaction {
     id: string;
