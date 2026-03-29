@@ -200,6 +200,19 @@ export default function PeopleList() {
                 </div>
             </div>
 
+            {/* Ministry Summary */}
+            {ministryFilter !== 'ALL' && (
+                <div className="bg-blue-900/20 border border-blue-500/30 p-4 rounded-xl flex items-center gap-3 animate-in fade-in slide-in-from-top-2">
+                    <div className="p-2 bg-blue-500/20 rounded-lg">
+                        <Users className="w-5 h-5 text-blue-400" />
+                    </div>
+                    <div>
+                        <p className="text-sm text-blue-300 font-medium">Personas en: <span className="text-white font-bold">{ministries.find(m => m.id === ministryFilter)?.name}</span></p>
+                        <p className="text-2xl font-bold text-white">{filteredPeople.length}</p>
+                    </div>
+                </div>
+            )}
+
             {/* Municipality Summary */}
             {municipalityFilter !== 'ALL' && (
                 <div className="bg-blue-900/20 border border-blue-500/30 p-4 rounded-xl flex items-center gap-3 animate-in fade-in slide-in-from-top-2">

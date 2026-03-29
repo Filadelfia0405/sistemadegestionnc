@@ -84,6 +84,7 @@ export default function CandidatePortal() {
     const [error, setError] = useState<string | null>(null);
     const [finished, setFinished] = useState(false);
     const [showPact, setShowPact] = useState(false);
+    const [photoError, setPhotoError] = useState(false);
 
     // Form State
     const [formData, setFormData] = useState({
@@ -212,6 +213,12 @@ export default function CandidatePortal() {
 
     const handleContinueToPact = (e: React.FormEvent) => {
         e.preventDefault();
+        if (!formData.photoUrl) {
+            setPhotoError(true);
+            document.getElementById('photo-section')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            return;
+        }
+        setPhotoError(false);
         setShowPact(true);
         window.scrollTo(0, 0);
     };
@@ -410,18 +417,26 @@ export default function CandidatePortal() {
             <form onSubmit={handleContinueToPact} className="space-y-8">
 
                 {/* FOTO DE PERFIL */}
-                <section className="bg-gray-900 p-6 rounded-xl border border-gray-800 flex flex-col items-center">
-                    <h2 className="text-xl font-bold text-white mb-6 uppercase tracking-wider w-full border-b border-gray-800 pb-2">Foto de Perfil</h2>
+                <section id="photo-section" className={cn(
+                    "bg-gray-900 p-6 rounded-xl border flex flex-col items-center transition-colors",
+                    photoError ? "border-red-500/60 shadow-red-500/10 shadow-lg" : "border-gray-800"
+                )}>
+                    <div className="w-full border-b border-gray-800 pb-2 mb-6">
+                        <h2 className="text-xl font-bold text-white uppercase tracking-wider">
+                            Foto de Perfil <span className="text-red-400">*</span>
+                        </h2>
+                        <p className="text-xs text-gray-500 mt-1">Obligatoria — sube una foto clara de tu rostro</p>
+                    </div>
 
                     <div className="relative group">
                         <div className={cn(
-                            "w-32 h-32 rounded-full overflow-hidden border-4 border-gray-800 flex items-center justify-center bg-gray-950",
-                            formData.photoUrl ? "border-blue-500" : "border-dashed"
+                            "w-32 h-32 rounded-full overflow-hidden border-4 flex items-center justify-center bg-gray-950 transition-colors",
+                            formData.photoUrl ? "border-blue-500" : photoError ? "border-red-500 border-dashed" : "border-gray-700 border-dashed"
                         )}>
                             {formData.photoUrl ? (
                                 <img src={formData.photoUrl} alt="Perfil" className="w-full h-full object-cover" />
                             ) : (
-                                <UserCheck className="w-12 h-12 text-gray-700" />
+                                <UserCheck className={cn("w-12 h-12", photoError ? "text-red-700" : "text-gray-700")} />
                             )}
                         </div>
                         <label className="absolute bottom-0 right-0 bg-blue-600 hover:bg-blue-700 text-white p-2 rounded-full shadow-lg cursor-pointer transition-transform hover:scale-110">
@@ -436,6 +451,7 @@ export default function CandidatePortal() {
                                         const reader = new FileReader();
                                         reader.onloadend = () => {
                                             setFormData(prev => ({ ...prev, photoUrl: reader.result as string }));
+                                            setPhotoError(false);
                                         };
                                         reader.readAsDataURL(file);
                                     }
@@ -443,7 +459,15 @@ export default function CandidatePortal() {
                             />
                         </label>
                     </div>
-                    <p className="text-gray-500 text-sm mt-4">Click en el icono para subir tu foto</p>
+
+                    {photoError ? (
+                        <div className="flex items-center gap-2 mt-4 text-red-400 text-sm animate-in fade-in slide-in-from-top-1">
+                            <TriangleAlert className="w-4 h-4 shrink-0" />
+                            Debes subir una foto de perfil para continuar.
+                        </div>
+                    ) : (
+                        <p className="text-gray-500 text-sm mt-4">Click en el icono para subir tu foto</p>
+                    )}
                 </section>
 
                 {/* FAMILIA */}

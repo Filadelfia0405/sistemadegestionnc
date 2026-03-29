@@ -2,8 +2,7 @@ import React, { useState } from 'react';
 import { useStorage } from '../context/StorageContext';
 import { useNavigate } from 'react-router-dom';
 import { Person } from '../types';
-import { User, Phone, Mail, MapPin } from 'lucide-react';
-import { SECTORS } from '../data/sectors';
+import { User, Phone, Mail } from 'lucide-react';
 
 export default function Registration() {
     const { addPerson } = useStorage();
@@ -143,56 +142,6 @@ export default function Registration() {
                                     className="w-full bg-gray-950 border border-gray-800 rounded-lg pl-10 p-3 text-white focus:ring-2 focus:ring-blue-500 outline-none"
                                     placeholder="juan@ejemplo.com"
                                 />
-                            </div>
-                        </div>
-                        <div className="space-y-2 md:col-span-2">
-                            <label className="text-sm font-medium text-gray-300">Dirección</label>
-                            <div className="space-y-4">
-                                <div>
-                                    <label className="text-xs text-gray-400 mb-1 block">Municipio</label>
-                                    <select
-                                        name="municipality"
-                                        title="Seleccione un municipio"
-                                        value={formData.municipality}
-                                        onChange={handleChange}
-                                        className="w-full bg-gray-950 border border-gray-800 rounded-lg p-3 text-white focus:ring-2 focus:ring-blue-500 outline-none"
-                                    >
-                                        <option value="">Selecciona un municipio...</option>
-                                        {Object.keys(SECTORS).map(m => (
-                                            <option key={m} value={m}>{m}</option>
-                                        ))}
-                                    </select>
-                                </div>
-
-                                {formData.municipality && SECTORS[formData.municipality] && (
-                                    <div className="animate-in fade-in slide-in-from-top-2">
-                                        <label className="text-xs text-gray-400 mb-1 block">Sector</label>
-                                        <select
-                                            name="sector"
-                                            title="Seleccione un sector"
-                                            value={formData.sector}
-                                            onChange={handleChange}
-                                            className="w-full bg-gray-950 border border-gray-800 rounded-lg p-3 text-white focus:ring-2 focus:ring-blue-500 outline-none"
-                                        >
-                                            <option value="">Selecciona un sector...</option>
-                                            {SECTORS[formData.municipality].map(s => (
-                                                <option key={s} value={s}>{s}</option>
-                                            ))}
-                                        </select>
-                                    </div>
-                                )}
-
-                                <div className="relative">
-                                    <MapPin className="absolute left-3 top-3 w-5 h-5 text-gray-500" />
-                                    <input
-                                        type="text"
-                                        name="address"
-                                        value={formData.address}
-                                        onChange={handleChange}
-                                        className="w-full bg-gray-950 border border-gray-800 rounded-lg pl-10 p-3 text-white focus:ring-2 focus:ring-blue-500 outline-none"
-                                        placeholder="Detalles adicionales (Calle, Casa, etc.)"
-                                    />
-                                </div>
                             </div>
                         </div>
                     </div>
