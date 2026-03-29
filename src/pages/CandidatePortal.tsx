@@ -2,8 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { useStorage } from '../context/StorageContext';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
-import { Upload, UserCheck, AlertCircle, CheckSquare, TriangleAlert } from 'lucide-react';
+import { Upload, UserCheck, AlertCircle, CheckSquare, TriangleAlert, MapPin } from 'lucide-react';
 import { cn } from '../utils/cn';
+import { SECTORS } from '../data/sectors';
 import { Person } from '../types';
 
 const SERVICE_AREAS = [
@@ -96,7 +97,9 @@ export default function CandidatePortal() {
         hasChildren: 'NO', // Using string for radio, convert to bool on submit
         childrenCount: undefined as number | undefined,
         residenceZone: '',
+        municipality: '',
         sector: '',
+        address: '',
 
         // Spiritual Path
         alliesCourseStatus: '',
@@ -145,7 +148,9 @@ export default function CandidatePortal() {
                 civilStatus: currentPerson.civilStatus || '',
                 spouseName: currentPerson.spouseName || '',
                 hasChildren: currentPerson.hasChildren ? 'SI' : 'NO',
+                municipality: currentPerson.municipality || '',
                 sector: currentPerson.sector || '',
+                address: currentPerson.address || '',
 
                 alliesCourseStatus: currentPerson.alliesCourseStatus || '',
                 previousChurchMember: currentPerson.previousChurchMember ? 'SI' : 'NO',
@@ -238,7 +243,9 @@ export default function CandidatePortal() {
             spouseName: formData.civilStatus === 'Casado/a' ? formData.spouseName : undefined,
             hasChildren: formData.hasChildren === 'SI',
             childrenCount: formData.childrenCount,
+            municipality: formData.municipality,
             sector: formData.sector,
+            address: formData.address,
 
             alliesCourseStatus: formData.alliesCourseStatus as any,
             previousChurchMember: formData.previousChurchMember === 'SI',
@@ -555,8 +562,57 @@ export default function CandidatePortal() {
                             )}
                         </div>
 
+                        <div className="space-y-4 pt-4 border-t border-gray-800">
+                            <h3 className="text-sm font-semibold text-gray-300">Dirección</h3>
+                            <div>
+                                <label className="text-xs text-gray-400 mb-1 block">Municipio</label>
+                                <select
+                                    name="municipality"
+                                    title="Seleccione un municipio"
+                                    value={formData.municipality}
+                                    onChange={e => setFormData({ ...formData, municipality: e.target.value, sector: '' })}
+                                    className="w-full bg-gray-950 border border-gray-800 rounded-lg p-3 text-white focus:ring-2 focus:ring-blue-500 outline-none"
+                                >
+                                    <option value="">Selecciona un municipio...</option>
+                                    {Object.keys(SECTORS).map(m => (
+                                        <option key={m} value={m}>{m}</option>
+                                    ))}
+                                </select>
+                            </div>
 
+                            {formData.municipality && SECTORS[formData.municipality as keyof typeof SECTORS] && (
+                                <div className="animate-in fade-in slide-in-from-top-2">
+                                    <label className="text-xs text-gray-400 mb-1 block">Sector</label>
+                                    <select
+                                        name="sector"
+                                        title="Seleccione un sector"
+                                        value={formData.sector}
+                                        onChange={e => setFormData({ ...formData, sector: e.target.value })}
+                                        className="w-full bg-gray-950 border border-gray-800 rounded-lg p-3 text-white focus:ring-2 focus:ring-blue-500 outline-none"
+                                    >
+                                        <option value="">Selecciona un sector...</option>
+                                        {SECTORS[formData.municipality as keyof typeof SECTORS].map(s => (
+                                            <option key={s} value={s}>{s}</option>
+                                        ))}
+                                    </select>
+                                </div>
+                            )}
 
+                            <div className="relative">
+                                <label className="text-xs text-gray-400 mb-1 block">Detalles de la dirección</label>
+                                <div className="relative">
+                                    <MapPin className="absolute left-3 top-3 w-5 h-5 text-gray-500" />
+                                    <input
+                                        type="text"
+                                        name="address"
+                                        value={formData.address}
+                                        onChange={e => setFormData({ ...formData, address: e.target.value })}
+                                        className="w-full bg-gray-950 border border-gray-800 rounded-lg pl-10 p-3 text-white focus:ring-2 focus:ring-blue-500 outline-none"
+                                        placeholder="Calle, Casa, etc."
+                                    />
+                                </div>
+                            </div>
+                        </div>
 
                     </div>
                 </section>
